@@ -1,15 +1,15 @@
 (function(){
 	var selectedCar, saveButton = document.querySelector('.fa-download').parentNode; //parentnode is the element's "wrapper" (whatever it is nested in)
 
-
+	function loadStuff(){
 	if (window.localStorage.getItem('savedCar')) {
 		var data = window.localStorage.getItem('savedCar', selectedCar);
 	
 		data = JSON.parse(data);
 		renderCarInfo(data);
 
+		}
 	}
-
 
 
 //expanded AJAX example
@@ -26,6 +26,9 @@
 			console.log(data);
 
 			if(data && data !== "null") {
+
+
+
 				selectedCar = data;
 				data = JSON.parse(data);
 				renderCarInfo(data);
@@ -45,9 +48,14 @@
 	});
 
 	function renderCarInfo(car) {
+			var currentThumb = $('#' + car.model);
+			
+			var animIndex = parseInt(currentThumb.data('roundaboutindex'), 8);
+			$('#cars').roundabout('animateToChild', animIndex);
+
 			$('.thumbInfo img').addClass('nonActive');
 			$('#' + car.model).removeClass('nonActive');
-			
+
 			$('.subhead span').text(" mini Cooper " + car.model);
 			$('.modelName').text(car.modelName);
 			$('.priceInfo').text(car.pricing);
@@ -65,6 +73,24 @@
 
 
 	saveButton.addEventListener('click', saveData, false);
+
+
+//jquery plugin
+
+	$(window).load(function(){
+		$('#cars').roundabout({
+			childSelector : 'img',
+			minOpacity : 0.8,
+			minScale : 0.4,
+			duration : 1200
+		});
+
+		$('#cars').css('opacity', 1);
+
+		loadStuff();
+
+	});
+
 
 
 })();
